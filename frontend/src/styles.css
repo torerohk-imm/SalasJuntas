@@ -1,0 +1,46 @@
+:root {
+  font-family: Inter, system-ui, sans-serif;
+  color: #1e293b;
+  background: #f2f5f9;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; }
+
+.app-shell { padding: 24px; display: grid; gap: 16px; }
+.card { background: white; border-radius: 16px; border: 1px solid #dbe3ee; padding: 20px; }
+.top { display: flex; justify-content: space-between; align-items: center; }
+.top h1 { margin: 0; font-size: 48px; }
+.top p { margin: 8px 0; color: #64748b; }
+.top select { padding: 10px; border-radius: 8px; }
+.clock { text-align: right; }
+.clock strong { font-size: 64px; color: #2082ee; display: block; }
+.clock span { text-transform: capitalize; font-weight: 600; color: #475569; }
+.notice { display: flex; justify-content: space-between; align-items: center; background: #e9f2ff; }
+.pill { padding: 10px 16px; border-radius: 999px; font-weight: 700; }
+.pill.free { background: #d2f6db; color: #1b7f39; }
+.pill.busy { background: #ffd6d6; color: #a41818; }
+
+.calendar { background: white; border-radius: 16px; border: 1px solid #dbe3ee; overflow: hidden; }
+.calendar-header { display: grid; grid-template-columns: 110px repeat(7, 1fr); border-bottom: 1px solid #e2e8f0; }
+.day-col, .time-col { padding: 14px; text-align: center; border-left: 1px solid #e2e8f0; }
+.day-col.today { border: 2px solid #2285f0; border-bottom: 1px solid #e2e8f0; }
+.calendar-grid { display: grid; grid-template-columns: 110px repeat(7, 1fr); position: relative; }
+.hours .hour { height: 60px; border-top: 1px solid #f1f5f9; padding: 12px; color: #94a3b8; }
+.day-lane { position: relative; border-left: 1px solid #eef2f7; }
+.slot { height: 60px; border-top: 1px solid #f1f5f9; }
+.event { position: absolute; left: 8px; right: 8px; background: #2583e7; color: white; border-radius: 14px; padding: 10px; box-shadow: 0 10px 20px #2583e726; }
+.event h4 { margin: 8px 0; font-size: 28px; line-height: 1.1; }
+.event span { font-size: 18px; opacity: .95; }
+
+.footer { display: flex; justify-content: space-between; align-items: center; }
+.legend { display: flex; gap: 20px; font-weight: 700; }
+.dot { width: 24px; height: 24px; display: inline-block; border-radius: 6px; vertical-align: middle; margin-right: 8px; }
+.dot.busy { background: #2583e7; }
+.dot.free { background: #e2e8f0; }
+.stats { display: flex; gap: 32px; }
+.stats small { color: #64748b; display: block; }
+.stats strong { font-size: 38px; color: #1f6fd6; }
+
+.admin textarea { width: 100%; margin-bottom: 10px; padding: 10px; }
+.admin button { background: #2563eb; color: white; border: none; border-radius: 8px; padding: 10px 14px; }
