@@ -1,0 +1,17 @@
+[Unit]
+Description=SalasJuntas API (Express)
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/opt/salasjuntas
+ExecStart=/usr/bin/node /opt/salasjuntas/backend/src/server.js
+Restart=always
+RestartSec=5
+Environment=NODE_ENV=production
+EnvironmentFile=/opt/salasjuntas/.env
+
+[Install]
+WantedBy=multi-user.target
