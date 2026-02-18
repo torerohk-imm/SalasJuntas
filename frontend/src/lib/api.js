@@ -1,5 +1,4 @@
-const RAW_API_URL = import.meta.env.VITE_API_URL || '';
-const API_URL = RAW_API_URL.endsWith('/') ? RAW_API_URL.slice(0, -1) : RAW_API_URL;
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000';
 
 const request = async (path, options = {}) => {
   const response = await fetch(`${API_URL}${path}`, {
@@ -19,12 +18,10 @@ const request = async (path, options = {}) => {
 };
 
 export const api = {
-  getHealth: () => request('/api/health'),
   getRooms: (token) => request('/api/rooms', { token }),
   getEvents: (roomId, start, end, token) =>
     request(`/api/rooms/${roomId}/events?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`, { token }),
   getNotice: () => request('/api/settings/notice'),
   saveNotice: (notice) => request('/api/settings/notice', { method: 'PUT', body: JSON.stringify({ notice }) }),
-  getAuthUrl: () => request('/api/auth/url'),
-  exchangeCode: (code) => request('/api/auth/exchange', { method: 'POST', body: JSON.stringify({ code }) })
+  getAuthUrl: () => request('/api/auth/url')
 };

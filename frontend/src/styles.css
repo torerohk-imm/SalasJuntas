@@ -13,11 +13,6 @@ body { margin: 0; }
 .top h1 { margin: 0; font-size: 48px; }
 .top p { margin: 8px 0; color: #64748b; }
 .top select { padding: 10px; border-radius: 8px; }
-.top-controls { display: flex; gap: 10px; align-items: center; }
-.primary, .secondary { border: none; border-radius: 8px; padding: 10px 14px; font-weight: 600; cursor: pointer; }
-.primary { background: #2563eb; color: white; }
-.secondary { background: #e2e8f0; color: #1e293b; }
-
 .clock { text-align: right; }
 .clock strong { font-size: 64px; color: #2082ee; display: block; }
 .clock span { text-transform: capitalize; font-weight: 600; color: #475569; }
