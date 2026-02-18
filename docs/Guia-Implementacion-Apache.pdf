@@ -1,0 +1,586 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+2 0 obj
+<< /Length 1790 >>
+stream
+BT /F1 10 Tf 50 800 Td 12 TL
+(# Gua paso a paso: Implementacin de SalasJuntas en Apache \(Linux\)) Tj
+T*
+() Tj
+T*
+(## Objetivo) Tj
+T*
+(Implementar la solucin completa de **SalasJuntas** en un servidor Linux usando **Apache** como servidor web p) Tj
+T*
+(ara el frontend y **reverse proxy** para la API Node.js.) Tj
+T*
+() Tj
+T*
+(---) Tj
+T*
+() Tj
+T*
+(## 1. Requisitos previos) Tj
+T*
+() Tj
+T*
+(### 1.1 Infraestructura) Tj
+T*
+(- Servidor Linux \(Ubuntu/Debian recomendado\).) Tj
+T*
+(- Acceso con usuario con permisos sudo.) Tj
+T*
+(- Dominio apuntando al servidor \(ejemplo: `salas.midominio.com`\).) Tj
+T*
+() Tj
+T*
+(### 1.2 Software requerido) Tj
+T*
+(- Apache 2.4+) Tj
+T*
+(- Node.js 20+) Tj
+T*
+(- npm 10+) Tj
+T*
+(- systemd) Tj
+T*
+(- rsync) Tj
+T*
+() Tj
+T*
+(Instalar paquetes base:) Tj
+T*
+() Tj
+T*
+(```bash) Tj
+T*
+(sudo apt update) Tj
+T*
+(sudo apt install -y apache2 nodejs npm rsync) Tj
+T*
+(```) Tj
+T*
+() Tj
+T*
+(Habilitar mdulos Apache necesarios:) Tj
+T*
+() Tj
+T*
+(```bash) Tj
+T*
+(sudo a2enmod proxy proxy_http rewrite headers ssl) Tj
+T*
+(```) Tj
+T*
+() Tj
+T*
+(---) Tj
+T*
+() Tj
+T*
+(## 2. Obtener el cdigo) Tj
+T*
+() Tj
+T*
+(Crear carpeta de despliegue y clonar:) Tj
+T*
+() Tj
+T*
+(```bash) Tj
+T*
+(sudo mkdir -p /opt/salasjuntas) Tj
+T*
+(sudo chown -R $USER:$USER /opt/salasjuntas) Tj
+T*
+(cd /opt) Tj
+T*
+(git clone <URL_DEL_REPOSITORIO> salasjuntas) Tj
+T*
+(cd /opt/salasjuntas) Tj
+T*
+(```) Tj
+T*
+() Tj
+T*
+(Si no usas git, copia el cdigo manualmente a `/opt/salasjuntas`.) Tj
+T*
+() Tj
+T*
+(---) Tj
+T*
+() Tj
+T*
+(## 3. Configuracin de Azure AD / Microsoft Graph) Tj
+T*
+() Tj
+T*
+(1. Crear o usar una App Registration en Azure Portal.) Tj
+T*
+(2. Configurar Redirect URI tipo Web:) Tj
+T*
+(   - Produccin: `https://TU_DOMINIO/`) Tj
+T*
+(3. Crear `Client Secret`.) Tj
+T*
+(4. Asignar permisos Graph:) Tj
+ET
+endstream
+endobj
+3 0 obj
+<< /Type /Page /Parent 12 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R >> >> /Contents 2 0 R >>
+endobj
+4 0 obj
+<< /Length 1593 >>
+stream
+BT /F1 10 Tf 50 800 Td 12 TL
+(   - `Calendars.Read`) Tj
+T*
+(   - `User.Read`) Tj
+T*
+(   - `Places.Read.All`) Tj
+T*
+(5. Ejecutar **Grant admin consent**.) Tj
+T*
+() Tj
+T*
+(Guardar los valores:) Tj
+T*
+(- Tenant ID) Tj
+T*
+(- Client ID) Tj
+T*
+(- Client Secret) Tj
+T*
+() Tj
+T*
+(---) Tj
+T*
+() Tj
+T*
+(## 4. Configurar variables de entorno) Tj
+T*
+() Tj
+T*
+(Crear `.env` desde el ejemplo:) Tj
+T*
+() Tj
+T*
+(```bash) Tj
+T*
+(cd /opt/salasjuntas) Tj
+T*
+(cp .env.example .env) Tj
+T*
+(nano .env) Tj
+T*
+(```) Tj
+T*
+() Tj
+T*
+(Ejemplo recomendado para produccin:) Tj
+T*
+() Tj
+T*
+(```env) Tj
+T*
+(PORT=4000) Tj
+T*
+(FRONTEND_URL=https://TU_DOMINIO) Tj
+T*
+(GRAPH_ENABLED=true) Tj
+T*
+(TIMEZONE=America/Mexico_City) Tj
+T*
+(AZURE_TENANT_ID=<tenant_id>) Tj
+T*
+(AZURE_CLIENT_ID=<client_id>) Tj
+T*
+(AZURE_CLIENT_SECRET=<client_secret>) Tj
+T*
+(AZURE_REDIRECT_URI=https://TU_DOMINIO/) Tj
+T*
+(ROOM_EMAILS=sala1@empresa.com,sala2@empresa.com) Tj
+T*
+(```) Tj
+T*
+() Tj
+T*
+(Notas:) Tj
+T*
+(- `GRAPH_ENABLED=true` usa Microsoft Graph real.) Tj
+T*
+(- `GRAPH_ENABLED=false` usa datos mock.) Tj
+T*
+() Tj
+T*
+(---) Tj
+T*
+() Tj
+T*
+(## 5. Instalar dependencias y construir frontend) Tj
+T*
+() Tj
+T*
+(```bash) Tj
+T*
+(cd /opt/salasjuntas) Tj
+T*
+(npm install) Tj
+T*
+(npm run build -w frontend) Tj
+T*
+(```) Tj
+T*
+() Tj
+T*
+(---) Tj
+T*
+() Tj
+T*
+(## 6. Publicar frontend esttico en Apache) Tj
+T*
+() Tj
+T*
+(```bash) Tj
+T*
+(sudo mkdir -p /var/www/salasjuntas/current) Tj
+T*
+(sudo rsync -av --delete /opt/salasjuntas/frontend/dist/ /var/www/salasjuntas/current/) Tj
+T*
+(```) Tj
+T*
+() Tj
+T*
+(La app incluye reglas `.htaccess` para rutas SPA.) Tj
+ET
+endstream
+endobj
+5 0 obj
+<< /Type /Page /Parent 12 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R >> >> /Contents 4 0 R >>
+endobj
+6 0 obj
+<< /Length 1649 >>
+stream
+BT /F1 10 Tf 50 800 Td 12 TL
+() Tj
+T*
+(---) Tj
+T*
+() Tj
+T*
+(## 7. Configurar API Node con systemd) Tj
+T*
+() Tj
+T*
+(Copiar unidad de servicio:) Tj
+T*
+() Tj
+T*
+(```bash) Tj
+T*
+(sudo cp /opt/salasjuntas/deploy/systemd/salasjuntas-api.service /etc/systemd/system/salasjuntas-api.service) Tj
+T*
+(```) Tj
+T*
+() Tj
+T*
+(Revisar rutas y usuario \(si aplica\):) Tj
+T*
+() Tj
+T*
+(```bash) Tj
+T*
+(sudo nano /etc/systemd/system/salasjuntas-api.service) Tj
+T*
+(```) Tj
+T*
+() Tj
+T*
+(Activar y arrancar servicio:) Tj
+T*
+() Tj
+T*
+(```bash) Tj
+T*
+(sudo systemctl daemon-reload) Tj
+T*
+(sudo systemctl enable --now salasjuntas-api) Tj
+T*
+(sudo systemctl status salasjuntas-api) Tj
+T*
+(```) Tj
+T*
+() Tj
+T*
+(Ver logs en vivo:) Tj
+T*
+() Tj
+T*
+(```bash) Tj
+T*
+(journalctl -u salasjuntas-api -f) Tj
+T*
+(```) Tj
+T*
+() Tj
+T*
+(---) Tj
+T*
+() Tj
+T*
+(## 8. Configurar VirtualHost Apache) Tj
+T*
+() Tj
+T*
+(Copiar archivo base:) Tj
+T*
+() Tj
+T*
+(```bash) Tj
+T*
+(sudo cp /opt/salasjuntas/deploy/apache/salasjuntas.conf /etc/apache2/sites-available/salasjuntas.conf) Tj
+T*
+(```) Tj
+T*
+() Tj
+T*
+(Editar y ajustar dominio/rutas:) Tj
+T*
+() Tj
+T*
+(```bash) Tj
+T*
+(sudo nano /etc/apache2/sites-available/salasjuntas.conf) Tj
+T*
+(```) Tj
+T*
+() Tj
+T*
+(Verifica:) Tj
+T*
+(- `ServerName` correcto.) Tj
+T*
+(- `DocumentRoot /var/www/salasjuntas/current`) Tj
+T*
+(- `ProxyPass /api http://127.0.0.1:4000/api`) Tj
+T*
+(- `ProxyPassReverse /api http://127.0.0.1:4000/api`) Tj
+T*
+() Tj
+T*
+(Activar sitio y recargar Apache:) Tj
+T*
+() Tj
+T*
+(```bash) Tj
+T*
+(sudo a2dissite 000-default.conf) Tj
+T*
+(sudo a2ensite salasjuntas.conf) Tj
+T*
+(sudo apachectl configtest) Tj
+T*
+(sudo systemctl reload apache2) Tj
+ET
+endstream
+endobj
+7 0 obj
+<< /Type /Page /Parent 12 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R >> >> /Contents 6 0 R >>
+endobj
+8 0 obj
+<< /Length 1368 >>
+stream
+BT /F1 10 Tf 50 800 Td 12 TL
+(```) Tj
+T*
+() Tj
+T*
+(---) Tj
+T*
+() Tj
+T*
+(## 9. Habilitar HTTPS con Let?s Encrypt \(recomendado\)) Tj
+T*
+() Tj
+T*
+(```bash) Tj
+T*
+(sudo apt install -y certbot python3-certbot-apache) Tj
+T*
+(sudo certbot --apache -d TU_DOMINIO) Tj
+T*
+(sudo certbot renew --dry-run) Tj
+T*
+(```) Tj
+T*
+() Tj
+T*
+(---) Tj
+T*
+() Tj
+T*
+(## 10. Validacin final) Tj
+T*
+() Tj
+T*
+(1. Abrir `https://TU_DOMINIO`.) Tj
+T*
+(2. Validar que cargue la UI y selector de salas.) Tj
+T*
+(3. Validar endpoint salud:) Tj
+T*
+() Tj
+T*
+(```bash) Tj
+T*
+(curl -i https://TU_DOMINIO/api/health) Tj
+T*
+(```) Tj
+T*
+() Tj
+T*
+(4. Si Graph est activo, probar botn **Conectar Microsoft 365**.) Tj
+T*
+(5. Confirmar que se listan eventos reales de salas.) Tj
+T*
+() Tj
+T*
+(---) Tj
+T*
+() Tj
+T*
+(## 11. Operacin y mantenimiento) Tj
+T*
+() Tj
+T*
+(Reiniciar API:) Tj
+T*
+() Tj
+T*
+(```bash) Tj
+T*
+(sudo systemctl restart salasjuntas-api) Tj
+T*
+(```) Tj
+T*
+() Tj
+T*
+(Ver estado API:) Tj
+T*
+() Tj
+T*
+(```bash) Tj
+T*
+(sudo systemctl status salasjuntas-api) Tj
+T*
+(```) Tj
+T*
+() Tj
+T*
+(Logs de API:) Tj
+T*
+() Tj
+T*
+(```bash) Tj
+T*
+(journalctl -u salasjuntas-api -f) Tj
+T*
+(```) Tj
+T*
+() Tj
+T*
+(Recargar Apache:) Tj
+T*
+() Tj
+T*
+(```bash) Tj
+T*
+(sudo systemctl reload apache2) Tj
+T*
+(```) Tj
+T*
+() Tj
+T*
+(---) Tj
+T*
+() Tj
+T*
+(## 12. Troubleshooting rpido) Tj
+T*
+() Tj
+T*
+(### 401 en `/api/rooms`) Tj
+ET
+endstream
+endobj
+9 0 obj
+<< /Type /Page /Parent 12 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R >> >> /Contents 8 0 R >>
+endobj
+10 0 obj
+<< /Length 677 >>
+stream
+BT /F1 10 Tf 50 800 Td 12 TL
+(- Verificar login OAuth y token vigente.) Tj
+T*
+(- Verificar `GRAPH_ENABLED=true` y credenciales vlidas.) Tj
+T*
+() Tj
+T*
+(### `redirect_uri_mismatch`) Tj
+T*
+(- `AZURE_REDIRECT_URI` debe coincidir exactamente con Azure.) Tj
+T*
+() Tj
+T*
+(### 404 al refrescar rutas frontend) Tj
+T*
+(- Confirmar `.htaccess` en `/var/www/salasjuntas/current/`.) Tj
+T*
+(- Confirmar `AllowOverride All` en Apache.) Tj
+T*
+(- Confirmar `mod_rewrite` habilitado.) Tj
+T*
+() Tj
+T*
+(### API no levanta con systemd) Tj
+T*
+(- Revisar `journalctl -u salasjuntas-api -f`.) Tj
+T*
+(- Revisar ruta de Node en `ExecStart`.) Tj
+T*
+(- Revisar formato de `/opt/salasjuntas/.env`.) Tj
+ET
+endstream
+endobj
+11 0 obj
+<< /Type /Page /Parent 12 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R >> >> /Contents 10 0 R >>
+endobj
+12 0 obj
+<< /Type /Pages /Kids [3 0 R 5 0 R 7 0 R 9 0 R 11 0 R] /Count 5 >>
+endobj
+13 0 obj
+<< /Type /Catalog /Pages 12 0 R >>
+endobj
+xref
+0 14
+0000000000 65535 f 
+0000000009 00000 n 
+0000000079 00000 n 
+0000001921 00000 n 
+0000002048 00000 n 
+0000003693 00000 n 
+0000003820 00000 n 
+0000005521 00000 n 
+0000005648 00000 n 
+0000007068 00000 n 
+0000007195 00000 n 
+0000007924 00000 n 
+0000008053 00000 n 
+0000008136 00000 n 
+trailer
+<< /Size 14 /Root 13 0 R >>
+startxref
+8187
+%%EOF
