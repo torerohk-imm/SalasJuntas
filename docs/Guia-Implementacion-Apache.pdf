@@ -132,7 +132,7 @@ endobj
 << /Type /Page /Parent 12 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R >> >> /Contents 2 0 R >>
 endobj
 4 0 obj
-<< /Length 1661 >>
+<< /Length 1593 >>
 stream
 BT /F1 10 Tf 50 800 Td 12 TL
 (   - `Calendars.Read`) Tj
@@ -219,11 +219,7 @@ T*
 T*
 () Tj
 T*
-(## 5. Verificar integridad del repositorio \(recomendado\)) Tj
-T*
-() Tj
-T*
-(Antes de instalar dependencias, valida que no existan conflictos de merge ni JSON invlido:) Tj
+(## 5. Instalar dependencias y construir frontend) Tj
 T*
 () Tj
 T*
@@ -231,39 +227,6 @@ T*
 T*
 (cd /opt/salasjuntas) Tj
 T*
-(node scripts/validate-repo.mjs) Tj
-T*
-(```) Tj
-T*
-() Tj
-T*
-(Si el script reporta conflictos \(`<<<<<<<`, `=======`, `>>>>>>>`\) o JSON invlido, corrige esos archivos y vue) Tj
-T*
-(lve a ejecutar.) Tj
-T*
-() Tj
-T*
-(---) Tj
-T*
-() Tj
-T*
-(## 6. Instalar dependencias y construir frontend) Tj
-T*
-() Tj
-T*
-(```bash) Tj
-T*
-(cd /opt/salasjuntas) Tj
-ET
-endstream
-endobj
-5 0 obj
-<< /Type /Page /Parent 12 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R >> >> /Contents 4 0 R >>
-endobj
-6 0 obj
-<< /Length 1646 >>
-stream
-BT /F1 10 Tf 50 800 Td 12 TL
 (npm install) Tj
 T*
 (npm run build -w frontend) Tj
@@ -272,39 +235,11 @@ T*
 T*
 () Tj
 T*
-(Si obtienes `npm ERR! EJSONPARSE` en `frontend/package.json`:) Tj
-T*
-() Tj
-T*
-(1. Edita el archivo y elimina marcadores de conflicto:) Tj
-T*
-(   - `<<<<<<< ...`) Tj
-T*
-(   - `=======`) Tj
-T*
-(   - `>>>>>>> ...`) Tj
-T*
-(2. Deja el archivo como JSON vlido \(sin comentarios y con comillas dobles\).) Tj
-T*
-(3. Ejecuta nuevamente:) Tj
-T*
-() Tj
-T*
-(```bash) Tj
-T*
-(node scripts/validate-repo.mjs) Tj
-T*
-(npm install) Tj
-T*
-(```) Tj
-T*
-() Tj
-T*
 (---) Tj
 T*
 () Tj
 T*
-(## 7. Publicar frontend esttico en Apache) Tj
+(## 6. Publicar frontend esttico en Apache) Tj
 T*
 () Tj
 T*
@@ -319,14 +254,23 @@ T*
 () Tj
 T*
 (La app incluye reglas `.htaccess` para rutas SPA.) Tj
-T*
+ET
+endstream
+endobj
+5 0 obj
+<< /Type /Page /Parent 12 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R >> >> /Contents 4 0 R >>
+endobj
+6 0 obj
+<< /Length 1649 >>
+stream
+BT /F1 10 Tf 50 800 Td 12 TL
 () Tj
 T*
 (---) Tj
 T*
 () Tj
 T*
-(## 8. Configurar API Node con systemd) Tj
+(## 7. Configurar API Node con systemd) Tj
 T*
 () Tj
 T*
@@ -383,19 +327,10 @@ T*
 () Tj
 T*
 (---) Tj
-ET
-endstream
-endobj
-7 0 obj
-<< /Type /Page /Parent 12 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R >> >> /Contents 6 0 R >>
-endobj
-8 0 obj
-<< /Length 1684 >>
-stream
-BT /F1 10 Tf 50 800 Td 12 TL
+T*
 () Tj
 T*
-(## 9. Configurar VirtualHost Apache) Tj
+(## 8. Configurar VirtualHost Apache) Tj
 T*
 () Tj
 T*
@@ -448,7 +383,16 @@ T*
 (sudo apachectl configtest) Tj
 T*
 (sudo systemctl reload apache2) Tj
-T*
+ET
+endstream
+endobj
+7 0 obj
+<< /Type /Page /Parent 12 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R >> >> /Contents 6 0 R >>
+endobj
+8 0 obj
+<< /Length 1368 >>
+stream
+BT /F1 10 Tf 50 800 Td 12 TL
 (```) Tj
 T*
 () Tj
@@ -457,7 +401,7 @@ T*
 T*
 () Tj
 T*
-(## 10. Habilitar HTTPS con Let?s Encrypt \(recomendado\)) Tj
+(## 9. Habilitar HTTPS con Let?s Encrypt \(recomendado\)) Tj
 T*
 () Tj
 T*
@@ -477,7 +421,7 @@ T*
 T*
 () Tj
 T*
-(## 11. Validacin final) Tj
+(## 10. Validacin final) Tj
 T*
 () Tj
 T*
@@ -507,21 +451,12 @@ T*
 T*
 () Tj
 T*
-(## 12. Operacin y mantenimiento) Tj
+(## 11. Operacin y mantenimiento) Tj
 T*
 () Tj
 T*
 (Reiniciar API:) Tj
-ET
-endstream
-endobj
-9 0 obj
-<< /Type /Page /Parent 12 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R >> >> /Contents 8 0 R >>
-endobj
-10 0 obj
-<< /Length 1203 >>
-stream
-BT /F1 10 Tf 50 800 Td 12 TL
+T*
 () Tj
 T*
 (```bash) Tj
@@ -572,12 +507,21 @@ T*
 T*
 () Tj
 T*
-(## 13. Troubleshooting rpido) Tj
+(## 12. Troubleshooting rpido) Tj
 T*
 () Tj
 T*
 (### 401 en `/api/rooms`) Tj
-T*
+ET
+endstream
+endobj
+9 0 obj
+<< /Type /Page /Parent 12 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 1 0 R >> >> /Contents 8 0 R >>
+endobj
+10 0 obj
+<< /Length 677 >>
+stream
+BT /F1 10 Tf 50 800 Td 12 TL
 (- Verificar login OAuth y token vigente.) Tj
 T*
 (- Verificar `GRAPH_ENABLED=true` y credenciales vlidas.) Tj
@@ -626,17 +570,17 @@ xref
 0000000079 00000 n 
 0000001921 00000 n 
 0000002048 00000 n 
-0000003761 00000 n 
-0000003888 00000 n 
-0000005586 00000 n 
-0000005713 00000 n 
-0000007449 00000 n 
-0000007576 00000 n 
-0000008832 00000 n 
-0000008961 00000 n 
-0000009044 00000 n 
+0000003693 00000 n 
+0000003820 00000 n 
+0000005521 00000 n 
+0000005648 00000 n 
+0000007068 00000 n 
+0000007195 00000 n 
+0000007924 00000 n 
+0000008053 00000 n 
+0000008136 00000 n 
 trailer
 << /Size 14 /Root 13 0 R >>
 startxref
-9095
+8187
 %%EOF

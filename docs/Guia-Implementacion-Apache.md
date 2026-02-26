@@ -99,20 +99,7 @@ Notas:
 
 ---
 
-## 5. Verificar integridad del repositorio (recomendado)
-
-Antes de instalar dependencias, valida que no existan conflictos de merge ni JSON inválido:
-
-```bash
-cd /opt/salasjuntas
-node scripts/validate-repo.mjs
-```
-
-Si el script reporta conflictos (`<<<<<<<`, `=======`, `>>>>>>>`) o JSON inválido, corrige esos archivos y vuelve a ejecutar.
-
----
-
-## 6. Instalar dependencias y construir frontend
+## 5. Instalar dependencias y construir frontend
 
 ```bash
 cd /opt/salasjuntas
@@ -120,23 +107,9 @@ npm install
 npm run build -w frontend
 ```
 
-Si obtienes `npm ERR! EJSONPARSE` en `frontend/package.json`:
-
-1. Edita el archivo y elimina marcadores de conflicto:
-   - `<<<<<<< ...`
-   - `=======`
-   - `>>>>>>> ...`
-2. Deja el archivo como JSON válido (sin comentarios y con comillas dobles).
-3. Ejecuta nuevamente:
-
-```bash
-node scripts/validate-repo.mjs
-npm install
-```
-
 ---
 
-## 7. Publicar frontend estático en Apache
+## 6. Publicar frontend estático en Apache
 
 ```bash
 sudo mkdir -p /var/www/salasjuntas/current
@@ -147,7 +120,7 @@ La app incluye reglas `.htaccess` para rutas SPA.
 
 ---
 
-## 8. Configurar API Node con systemd
+## 7. Configurar API Node con systemd
 
 Copiar unidad de servicio:
 
@@ -177,7 +150,7 @@ journalctl -u salasjuntas-api -f
 
 ---
 
-## 9. Configurar VirtualHost Apache
+## 8. Configurar VirtualHost Apache
 
 Copiar archivo base:
 
@@ -208,7 +181,7 @@ sudo systemctl reload apache2
 
 ---
 
-## 10. Habilitar HTTPS con Let’s Encrypt (recomendado)
+## 9. Habilitar HTTPS con Let’s Encrypt (recomendado)
 
 ```bash
 sudo apt install -y certbot python3-certbot-apache
@@ -218,7 +191,7 @@ sudo certbot renew --dry-run
 
 ---
 
-## 11. Validación final
+## 10. Validación final
 
 1. Abrir `https://TU_DOMINIO`.
 2. Validar que cargue la UI y selector de salas.
@@ -233,7 +206,7 @@ curl -i https://TU_DOMINIO/api/health
 
 ---
 
-## 12. Operación y mantenimiento
+## 11. Operación y mantenimiento
 
 Reiniciar API:
 
@@ -261,7 +234,7 @@ sudo systemctl reload apache2
 
 ---
 
-## 13. Troubleshooting rápido
+## 12. Troubleshooting rápido
 
 ### 401 en `/api/rooms`
 - Verificar login OAuth y token vigente.

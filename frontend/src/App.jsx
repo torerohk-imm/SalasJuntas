@@ -18,38 +18,20 @@ function App() {
   const [notice, setNotice] = useState('');
   const [noticeDraft, setNoticeDraft] = useState('');
   const [now, setNow] = useState(new Date());
-  const [token, setToken] = useState(() => localStorage.getItem('graphAccessToken') || '');
-  const [graphEnabled, setGraphEnabled] = useState(false);
 
   useEffect(() => {
-    const bootstrap = async () => {
-      const params = new URLSearchParams(window.location.search);
-      const code = params.get('code');
-
-      if (code) {
-        const payload = await api.exchangeCode(code);
-        if (payload.accessToken) {
-          localStorage.setItem('graphAccessToken', payload.accessToken);
-          setToken(payload.accessToken);
-        }
-
-        window.history.replaceState({}, '', window.location.pathname);
-      }
-
-      const health = await api.getHealth();
-      setGraphEnabled(Boolean(health.graphEnabled));
-
-      const [roomsData, noticeData] = await Promise.all([api.getRooms(token), api.getNotice()]);
+    const load = async () => {
+      const [roomsData, noticeData] = await Promise.all([api.getRooms(), api.getNotice()]);
       setRooms(roomsData);
       if (roomsData.length > 0) {
-        setSelectedRoomId((previous) => previous || roomsData[0].id);
+        setSelectedRoomId(roomsData[0].id);
       }
       setNotice(noticeData.notice);
       setNoticeDraft(noticeData.notice);
     };
 
-    bootstrap().catch(console.error);
-  }, [token]);
+    load().catch(console.error);
+  }, []);
 
   useEffect(() => {
     if (!selectedRoomId) {
@@ -61,10 +43,10 @@ function App() {
     start.setHours(8, 0, 0, 0);
 
     api
-      .getEvents(selectedRoomId, start.toISOString(), endOfWindow(start).toISOString(), token)
+      .getEvents(selectedRoomId, start.toISOString(), endOfWindow(start).toISOString())
       .then(setEvents)
       .catch(console.error);
-  }, [selectedRoomId, token]);
+  }, [selectedRoomId]);
 
   useEffect(() => {
     const interval = setInterval(() => setNow(new Date()), 1000);
@@ -100,41 +82,19 @@ function App() {
     setNotice(payload.notice);
   };
 
-  const connectToMicrosoft = async () => {
-    const { authUrl } = await api.getAuthUrl();
-    window.location.href = authUrl;
-  };
-
-  const clearSession = () => {
-    localStorage.removeItem('graphAccessToken');
-    setToken('');
-  };
-
   return (
     <main className="app-shell">
       <section className="card top">
         <div>
           <h1>{room?.displayName || 'Salas de Juntas'}</h1>
           <p>{`Capacidad: ${room?.capacity || '-'} Personas • ${room?.floor || 'Sin ubicación'}`}</p>
-          <div className="top-controls">
-            <select value={selectedRoomId} onChange={(e) => setSelectedRoomId(e.target.value)}>
-              {rooms.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.displayName}
-                </option>
-              ))}
-            </select>
-            {graphEnabled && !token && (
-              <button className="primary" onClick={connectToMicrosoft}>
-                Conectar Microsoft 365
-              </button>
-            )}
-            {graphEnabled && token && (
-              <button className="secondary" onClick={clearSession}>
-                Cerrar sesión Graph
-              </button>
-            )}
-          </div>
+          <select value={selectedRoomId} onChange={(e) => setSelectedRoomId(e.target.value)}>
+            {rooms.map((item) => (
+              <option key={item.id} value={item.id}>
+                {item.displayName}
+              </option>
+            ))}
+          </select>
         </div>
         <div className="clock">
           <strong>{format(now, 'HH:mm:ss')}</strong>
@@ -153,12 +113,8 @@ function App() {
 
       <section className="card footer">
         <div className="legend">
-          <span>
-            <i className="dot busy" /> Ocupado
-          </span>
-          <span>
-            <i className="dot free" /> Libre / Otros
-          </span>
+          <span><i className="dot busy" /> Ocupado</span>
+          <span><i className="dot free" /> Libre / Otros</span>
         </div>
         <div className="stats">
           <div>

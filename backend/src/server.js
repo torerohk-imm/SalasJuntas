@@ -23,10 +23,6 @@ app.get('/api/health', (_req, res) => {
 });
 
 app.get('/api/auth/url', async (_req, res) => {
-  if (!config.graphEnabled) {
-    return res.status(400).json({ message: 'Graph está deshabilitado. Activa GRAPH_ENABLED=true.' });
-  }
-
   try {
     const data = await getAuthorizationUrl();
     res.json(data);
@@ -36,10 +32,6 @@ app.get('/api/auth/url', async (_req, res) => {
 });
 
 app.post('/api/auth/exchange', async (req, res) => {
-  if (!config.graphEnabled) {
-    return res.status(400).json({ message: 'Graph está deshabilitado. Activa GRAPH_ENABLED=true.' });
-  }
-
   const { code } = req.body;
 
   if (!code) {
@@ -57,10 +49,6 @@ app.post('/api/auth/exchange', async (req, res) => {
 app.get('/api/rooms', async (req, res) => {
   const token = req.headers.authorization?.replace('Bearer ', '');
 
-  if (config.graphEnabled && !token) {
-    return res.status(401).json({ message: 'Se requiere token OAuth para consultar salas.' });
-  }
-
   try {
     const rooms = await listRooms(token);
     res.json(rooms);
@@ -72,10 +60,6 @@ app.get('/api/rooms', async (req, res) => {
 app.get('/api/rooms/:roomId/events', async (req, res) => {
   const token = req.headers.authorization?.replace('Bearer ', '');
   const { roomId } = req.params;
-
-  if (config.graphEnabled && !token) {
-    return res.status(401).json({ message: 'Se requiere token OAuth para consultar eventos.' });
-  }
   const { start, end } = req.query;
 
   if (!start || !end) {
